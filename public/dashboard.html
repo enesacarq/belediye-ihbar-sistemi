@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetim Paneli - Yazılım Belediyesi</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <div class="admin-container">
+
+        <div class="header-bar">
+            <h2>Yazılım Belediyesi İhbar Yönetim Kontrol Merkezi</h2>
+
+            <button class="logout-btn"
+                onclick="window.location.href='/admin/logout'">
+                Güvenli Çıkış
+            </button>
+        </div>
+
+        <table class="report-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vatandaş</th>
+                    <th>Telefon</th>
+                    <th>Başlık / Açıklama</th>
+                    <th>Açık Adres</th>
+                    <th>Fotoğraf</th>
+                    <th>Durum</th>
+                    <th>Tarih</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+
+            <tbody id="reportTableBody"></tbody>
+
+        </table>
+
+    </div>
+
+    <script>
+
+        async function loadReports() {
+
+            const response = await fetch('/api/admin/reports');
+            const reports = await response.json();
+
+            const tbody = document.getElementById('reportTableBody');
+
+            tbody.innerHTML = '';
+
+            reports.forEach(report => {
+
+                const tr = document.createElement('tr');
+
+                tr.innerHTML = `
+
+                    <td>#${report.id}</td>
+
+                    <td>
+                        <b>${report.name} ${report.surname}</b>
+                    </td>
+
+                    <td>
+                        ${report.phone}
+                    </td>
+
+                    <td>
+                        <b>${report.title}</b>
+                        <br><br>
+
+                        <span style="font-size:13px; color:#475569;">
+                            ${report.description}
+                        </span>
+                    </td>
+
+                    <td style="max-width:250px;">
+                        ${report.address || '-'}
+                    </td>
+
+                    <td>
+                        ${
+                            report.photo_path
+                            ?
+                            `
+                            <img 
+                                src="${report.photo_path}" 
+                                class="thumbnail"
+                                style="width:90px; border-radius:8px; cursor:pointer;"
+                                onclick="window.open('${report.photo_path}')"
+                            >
+                            `
+                            :
+                            '<i style="color:#94a3b8;">Yok</i>'
+                        }
+                    </td>
+
+                    <td>
+                        <span class="badge badge-${report.status}">
+                            ${report.status}
+                        </span>
+                    </td>
+
+                    <td>
+                        ${new Date(report.created_at).toLocaleString('tr-TR')}
+                    </td>
+
+                    <td>
+                        <select onchange="updateStatus(${report.id}, this.value)">
+
+                            <option value="Beklemede"
+                                ${report.status === 'Beklemede' ? 'selected' : ''}>
+                                Beklemede
+                            </option>
+
+                            <option value="İşlemde"
+                                ${report.status === 'İşlemde' ? 'selected' : ''}>
+                                İşlemde
+                            </option>
+
+                            <option value="Çözüldü"
+                                ${report.status === 'Çözüldü' ? 'selected' : ''}>
+                                Çözüldü
+                            </option>
+
+                        </select>
+                    </td>
+
+                `;
+
+                tbody.appendChild(tr);
+
+            });
+
+        }
+
+        async function updateStatus(id, newStatus) {
+
+            await fetch('/api/admin/update-status', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    id,
+                    status: newStatus
+                })
+
+            });
+
+            loadReports();
+
+        }
+
+        loadReports();
+
+    </script>
+
+</body>
+</html>
