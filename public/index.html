@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yazılım Belediyesi - İhbar Bildirim Sistemi</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>T.C. Yazılım Belediyesi<br><span style="font-size: 18px; font-weight: normal; color: #64748b;">Güvenli İhbar Bildirim Formu</span></h2>
+        
+    <form id="reportForm" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="name">Adınız</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="surname">Soyadınız</label>
+        <input type="text" id="surname" name="surname" required>
+    </div>
+
+    <div class="form-group">
+        <label for="phone">Cep Telefonunuz (Başında 0 olmadan)</label>
+        <input type="tel" id="phone" name="phone" required pattern="5[0-9]{9}" maxlength="10" placeholder="Örn: 5551234567">
+    </div>
+
+    <div class="form-group">
+        <label for="title">İhbar Başlığı</label>
+        <input type="text" id="title" name="title" required>
+    </div>
+
+    <div class="form-group">
+        <label for="description">Detaylı Açıklama</label>
+        <textarea id="description" name="description" rows="5" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="address">Olay Yeri / Açık Adres</label>
+        <textarea id="address" name="address" rows="3" required placeholder="Lütfen ihbarda bulunulan yerin açık adresini yazınız..."></textarea>
+    </div>
+    <div class="form-group">
+        <label for="photo">Olay Yeri Fotoğrafı Ekle</label>
+        <input type="file" id="photo" name="photo" accept="image/*">
+    </div>
+
+    <button type="button" id="submitBtn">Devam Et ve SMS Kodu İste</button>
+</form>    
+    </div>
+
+    <div id="smsModal" class="modal">
+        <div class="modal-content">
+            <h3>Telefon Doğrulaması</h3>
+            <p>Lütfen telefonunuza gönderilen 6 haneli doğrulama kodunu giriniz.</p>
+            <div class="form-group">
+                <input type="text" id="smsCodeInput" maxlength="6" placeholder="000000" style="text-align: center; font-size: 24px; letter-spacing: 5px;">
+            </div>
+            <button type="button" id="verifyBtn">Kodu Doğrula ve İhbarı Gönder</button>
+            <p style="font-size: 12px; color: #ef4444; margin-top: 10px; cursor: pointer;" onclick="document.getElementById('smsModal').style.display='none'">İptal Et</p>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
